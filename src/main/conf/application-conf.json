@@ -1,0 +1,13 @@
+{
+  "http.port": 8082,
+  "db_name": "vertx-mongo",
+  "connection_string": "mongodb://0.0.0.0:27017",
+  "maxPoolSize" : 50,                // int
+  "minPoolSize" : 25,                // int
+  "maxIdleTimeMS" : 300000,          // long
+  "maxLifeTimeMS" : 3600000,         // long
+  "waitQueueMultiple"  : 10,         // int
+  "waitQueueTimeoutMS" : 10000,      // long
+  "maintenanceFrequencyMS" : 2000,   // long
+  "maintenanceInitialDelayMS" : 500  // long
+}

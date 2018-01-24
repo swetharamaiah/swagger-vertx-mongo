@@ -1,0 +1,227 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "version" : "1.0",
+    "title" : "Job Platform API"
+  },
+  "host" : "localhost:8283",
+  "basePath" : "/jobdiscovery/v1",
+  "schemes" : [ "http" ],
+  "paths" : {
+    "/projects" : {
+      "get" : {
+        "tags" : [ "projects" ],
+        "summary" : "Retrieve all the projects",
+        "operationId" : "getProjects",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in": "path",
+          "name":"status",
+          "required":false
+        }],
+        "responses" : {
+          "default" : {
+            "description" : "success",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Project"
+              }
+            }
+          }
+        },
+        "x-accepts" : "application/json"
+      },
+      "post" : {
+        "tags" : [ "projects" ],
+        "summary" : "Add a Project",
+        "operationId" : "addProject",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "newProject",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Project"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Invalid Project input"
+          }
+        },
+        "x-contentType" : "application/json",
+        "x-accepts" : "application/json"
+      }
+    },
+    "/projects/{project_id}" : {
+      "get" : {
+        "tags" : [ "projects" ],
+        "summary" : "Retrieve a specific project",
+        "operationId" : "getProjectById",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "project_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "404" : {
+            "description" : "Project Not Found"
+          },
+          "default" : {
+            "description" : "Success",
+            "schema" : {
+              "$ref" : "#/definitions/Project"
+            }
+          }
+        },
+        "x-accepts" : "application/json"
+      },
+      "put" : {
+        "tags" : [ "projects" ],
+        "summary" : "Update a Project",
+        "operationId" : "updateProject",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "updateProject",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Project"
+          }
+        },{
+          "name" : "project_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success"
+          },
+          "400" : {
+            "description" : "Invalid Project input"
+          }
+        },
+        "x-contentType" : "application/json",
+        "x-accepts" : "application/json"
+      }
+    },
+    "/bids" : {
+      "post" : {
+        "tags" : [ "bid" ],
+        "summary" : "Bid for a project",
+        "parameters" : [{
+          "in" : "body",
+          "name" : "bid",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Bid"
+          }
+        }],
+        "x-accepts" : "application/json"
+      },
+      "put" : {
+        "tags" : [ "bid" ],
+        "summary" : "Update bidding price",
+        "parameters" : [ ],
+        "x-accepts" : "application/json"
+      }
+    },
+    "/user" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Create new user",
+        "operationId": "addUser",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [{
+          "in" : "body",
+          "name" : "newUser",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Project"
+          }
+        }],
+        "x-accepts" : "application/json"
+      }
+    }
+  },
+  "definitions" : {
+    "Project" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string",
+          "minLength" : 3,
+          "maxLength" : 20
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string",
+          "enum" : [ "Open", "Closed", "InProgress" ]
+        },
+        "biddingExpiration" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "maxBudget" : {
+          "type" : "number",
+          "format" : "double"
+        }
+      }
+    },
+    "Bid" : {
+      "type" : "object",
+      "properties" : {
+        "projectId" : {
+          "type" : "string"
+        },
+        "bidAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "sellerId" : {
+          "type" : "integer"
+        },
+        "buyerId" : {
+          "type" : "integer"
+        }
+      }
+    },
+    "User" : {
+      "type" : "object",
+      "properties" : {
+        "userId" : {
+          "type" : "integer"
+        },
+        "userType" : {
+          "type" : "string",
+          "enum" : [ "Seller", "Buyer" ]
+        },
+        "userName" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string",
+          "format" : "email"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,198 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Job Platform API
+host: 'localhost:8283'
+basePath: /jobdiscovery/v1
+schemes:
+  - http
+paths:
+  /projects:
+    get:
+      tags:
+        - projects
+      summary: Retrieve all the projects
+      produces:
+        - application/json
+        - application/xml
+      operationId: getProjects
+      parameters:
+        - in: query
+          name: status
+          description: Open/Closed/InProgress
+          required: false
+          type: string
+      responses:
+        default:
+          description: success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Project'
+    post:
+      tags:
+        - projects
+      summary: Add a Project
+      operationId: addProject
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: newProject
+          required: false
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Invalid Project input
+      x-contentType: application/json
+      x-accepts: application/json
+  '/projects/{project_id}':
+    get:
+      tags:
+        - projects
+      summary: Retrieve a specific project
+      operationId: getProjectById
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          type: string
+      responses:
+        '404':
+          description: Project Not Found
+        default:
+          description: Success
+          schema:
+            $ref: '#/definitions/Project'
+      produces:
+        - application/json
+        - application/xml
+    put:
+      tags:
+        - projects
+      summary: Update a Project
+      operationId: updateProject
+      parameters:
+        - in: path
+          name: project_id
+          required: true
+          type: string
+        - in: body
+          name: updateProject
+          required: true
+          schema:
+            $ref: '#/definitions/Project'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Invalid Project input
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+        - application/xml        
+  /bids:
+    post:
+      tags:
+        - bid
+      summary: Bid for a project
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+        - application/xml
+      parameters:
+        - in: body
+          name: bid
+          required: true
+          schema:
+            $ref: '#/definitions/Bid'
+      responses:
+        "200":
+          description: Successfully Bid on a project
+    put:
+      tags:
+        - bid
+      summary: Update bidding price
+      responses:
+        "200":
+          description: Success
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create new user
+      operationId: addUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: newUser
+          required: false
+          schema:
+            $ref: '#/definitions/User'
+      x-accepts: application/json
+      responses:
+        "201":
+         "description": User created
+definitions:
+  Project:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        minLength: 3
+        maxLength: 20
+      description:
+        type: string
+      status:
+        type: string
+        enum:
+          - Open
+          - Closed
+          - InProgress
+      biddingExpiration:
+        type: string
+        format: date-time
+      maxBudget:
+        type: number
+        format: double
+  Bid:
+    type: object
+    properties:
+      projectId:
+        type: string
+      bidAmount:
+        type: number
+        format: double
+      sellerId:
+        type: integer
+      buyerId:
+        type: integer
+  User:
+    type: object
+    properties:
+      userId:
+        type: integer
+      userType:
+        type: string
+        enum:
+          - Seller
+          - Buyer
+      userName:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+        format: email
