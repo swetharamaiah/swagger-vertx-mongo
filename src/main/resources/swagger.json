@@ -41,7 +41,7 @@
         "parameters" : [ {
           "in" : "body",
           "name" : "newProject",
-          "required" : false,
+          "required" : true,
           "schema" : {
             "$ref" : "#/definitions/Project"
           }
@@ -164,22 +164,27 @@
         "name" : {
           "type" : "string",
           "minLength" : 3,
-          "maxLength" : 20
+          "maxLength" : 20,
+          "required": true
         },
         "description" : {
-          "type" : "string"
+          "type" : "string",
+          "required": true
         },
         "status" : {
           "type" : "string",
-          "enum" : [ "Open", "Closed", "InProgress" ]
+          "enum" : [ "Open", "Closed", "InProgress" ],
+          "required": true
         },
         "biddingExpiration" : {
           "type" : "string",
-          "format" : "date-time"
+          "format" : "date-time",
+          "required": true
         },
         "maxBudget" : {
           "type" : "number",
-          "format" : "double"
+          "format" : "double",
+          "required": true
         }
       }
     },

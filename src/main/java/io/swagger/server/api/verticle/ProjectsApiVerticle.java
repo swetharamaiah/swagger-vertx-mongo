@@ -13,6 +13,9 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.mongo.MongoClient;
 
+import java.util.Date;
+import java.util.Map;
+
 public class ProjectsApiVerticle extends AbstractVerticle {
     final static Logger LOGGER = LoggerFactory.getLogger(ProjectsApiVerticle.class);
 
@@ -122,7 +125,8 @@ public class ProjectsApiVerticle extends AbstractVerticle {
             try {
                 String projectId = message.body().getString("project_id");
                 JsonObject query = new JsonObject().put("_id", projectId);
-                JsonObject update = message.body().getJsonObject("updateProject");
+                JsonObject update = new constructUpdateQuery(message).invoke();
+
                 service.updateProject(mongo, query, update, result -> {
                     if (result.succeeded()) {
                         message.reply(Json.encodePrettily(result.result()),
@@ -171,5 +175,28 @@ public class ProjectsApiVerticle extends AbstractVerticle {
 
     private void logUnexpectedError(String serviceName, Throwable cause) {
         LOGGER.error("Unexpected error in "+ serviceName, cause);
+    }
+
+    private class constructUpdateQuery {
+        private Message<JsonObject> message;
+
+        public constructUpdateQuery(Message<JsonObject> message) {
+            this.message = message;
+        }
+
+        public JsonObject invoke() {
+            JsonObject updateProject = message.body().getJsonObject("updateProject");
+            JsonObject j = new JsonObject();
+            for(Map.Entry<String, Object> o : updateProject.getMap().entrySet()) {
+                if(o.getKey().contains("biddingExpiration")) {
+                    String dateStr = new Date(Long.valueOf(updateProject.getString("biddingExpiration"))).toString();
+                    j.put(o.getKey(), dateStr);
+                } else {
+                    j.put(o.getKey(), o.getValue());
+                }
+
+            }
+            return new JsonObject().put("$set", j);
+        }
     }
 }
