@@ -20,6 +20,8 @@ public class BidApiVerticle extends AbstractVerticle {
     final static String POST_BIDS_SERVICE_ID = "POST_bids";
     final static String PUT_BIDS_SERVICE_ID = "PUT_bids";
 
+    //testing git commit
+
     MongoClient mongo;
 
     final BidApi service;
